@@ -1,0 +1,65 @@
+.flex {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--darkgray1);
+}
+
+.card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 400px;
+  height: 200px;
+  border-radius: 9999px;
+  overflow: hidden;
+  font-size: 54px;
+  font-weight: 600;
+  letter-spacing: -2px;
+  --x: 0%;
+  --y: 50%;
+}
+
+[data-state="day"] {
+  background: var(--gray6);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--gray7);
+}
+
+[data-state="night"] {
+  background: linear-gradient(
+        180deg,
+        var(--darkgray2) 0%,
+        var(--darkgray1) 100%
+      )
+      padding-box,
+    radial-gradient(
+        100px 100px at var(--x) calc(var(--y) + 50%),
+        var(--darkgray12) 0%,
+        var(--darkgray5) 100%
+      )
+      border-box;
+  border: 1px solid transparent;
+}
+
+[data-state="night"] > .glow {
+  display: block;
+}
+
+.glow {
+  display: none;
+  --left: -10%;
+  --top: -75%;
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  top: calc(var(--top) + 50px);
+  left: calc(var(--left) - 50px);
+  background: white;
+  filter: blur(50px);
+  border-radius: 9999px;
+}

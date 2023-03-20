@@ -1,0 +1,47 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+  color: var(--foreground);
+  background-color: var(--background);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  /* Token */
+  --foreground: var(--darkgray12);
+  --background: var(--darkgray1);
+  /* Colours */
+  --gray1: hsl(0, 0%, 99%);
+  --gray2: hsl(0, 0%, 97.3%);
+  --gray3: hsl(0, 0%, 95.1%);
+  --gray4: hsl(0, 0%, 93%);
+  --gray5: hsl(0, 0%, 90.9%);
+  --gray6: hsl(0, 0%, 88.7%);
+  --gray7: hsl(0, 0%, 85.8%);
+  --gray8: hsl(0, 0%, 78%);
+  --gray9: hsl(0, 0%, 56.1%);
+  --gray10: hsl(0, 0%, 52.3%);
+  --gray11: hsl(0, 0%, 43.5%);
+  --gray12: hsl(0, 0%, 9%);
+  --darkgray1: hsl(0, 0%, 8.5%);
+  --darkgray2: hsl(0, 0%, 11%);
+  --darkgray3: hsl(0, 0%, 13.6%);
+  --darkgray4: hsl(0, 0%, 15.8%);
+  --darkgray5: hsl(0, 0%, 17.9%);
+  --darkgray6: hsl(0, 0%, 20.5%);
+  --darkgray7: hsl(0, 0%, 24.3%);
+  --darkgray8: hsl(0, 0%, 31.2%);
+  --darkgray9: hsl(0, 0%, 43.9%);
+  --darkgray10: hsl(0, 0%, 49.4%);
+  --darkgray11: hsl(0, 0%, 62.8%);
+  --darkgray12: hsl(0, 0%, 93%);
+  /* Shadows */
+  --shadow-color: 0deg 0% 63%;
+  --shadow: 0px 1px 1.1px hsl(var(--shadow-color) / 0.36),
+    0px 3.3px 3.7px -0.8px hsl(var(--shadow-color) / 0.36),
+    0px 8.2px 9.2px -1.7px hsl(var(--shadow-color) / 0.36),
+    0px 20px 22.5px -2.5px hsl(var(--shadow-color) / 0.36);
+}
