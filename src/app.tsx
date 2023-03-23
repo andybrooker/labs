@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./root.css";
 
 function degreeToRadian(degrees: number) {
@@ -15,19 +15,6 @@ function easeInQuad(x: number): number {
 
 function normalise(value: number, min: number, max: number): number {
   return (value - min) / (max - min);
-}
-
-function calculateShadowLightness(lightness: number) {
-  return lightness / 1.61 - (1 - lightness / 100) * 4;
-}
-
-function easeOutQuad(x: number): number {
-  return 1 - (1 - x) * (1 - x);
-}
-
-function getLightLevel(value: number) {
-  const pow = -1 * (value - 1) ** 6;
-  return Math.exp(pow);
 }
 
 function getShadows({ angle }: { angle: number }) {
@@ -74,8 +61,64 @@ function useTime() {
   return { time };
 }
 
+function useCounter() {
+  const [count, setCount] = useState(360);
+  const [isRunning, setIsRunning] = useState(false);
+  const intervalRef = useRef<number>();
+
+  useEffect(() => {
+    if (isRunning) {
+      intervalRef.current = setInterval(() => {
+        setCount((prevCount) => {
+          const newCount = prevCount + 1;
+          if (newCount > 1440) {
+            // Stop at 24 hours (1440 minutes)
+            // setIsRunning(false);
+            return 0;
+          }
+          return newCount;
+        });
+      }, 1000 / 60);
+    }
+    return () => clearInterval(intervalRef.current);
+  }, [isRunning]);
+
+  function start() {
+    setIsRunning(true);
+  }
+
+  function stop() {
+    setIsRunning(false);
+  }
+
+  function reset() {
+    setCount(0);
+  }
+
+  return { count, start, stop, reset, isRunning };
+}
+
+function getGreeting(time: number) {
+  if (6 <= time && time < 12) return "Good Morning";
+  else if (12 <= time && time <= 18) return "Good Afternoon";
+  else return "Good Evening";
+}
+
+function formatTime(totalMinutes: number) {
+  const hours = Math.floor(totalMinutes / 60)
+    .toString()
+    .padStart(2, "0");
+  const minutes = (totalMinutes % 60).toString().padStart(2, "0");
+  return `${hours}:${minutes}`;
+}
+
+const dayOrNight = (value: number) =>
+  0 <= value && value < 180 ? "day" : "night";
+
 function App() {
-  const [value, setValue] = useState(0);
+  const { count, start, stop, isRunning } = useCounter();
+  // const [value, setValue] = useState(0);
+  const value = (count - 360) / 4;
   const maxDegrees = 360;
 
   function getCoord(
@@ -99,15 +142,16 @@ function App() {
   const opacity = Math.sin(radians);
 
   const shadows = getShadows({ angle: degreeToRadian(value) }).join(", ");
+  const timeOfDay = dayOrNight(value);
 
   return (
     <div
-      data-state={value <= 180 ? "day" : "night"}
+      data-state={timeOfDay}
       className="app"
       style={{ "--light": `${opacity * -100}%` } as React.CSSProperties}
     >
       <div
-        data-state={value <= 180 ? "day" : "night"}
+        data-state={timeOfDay}
         className="card"
         style={
           {
@@ -122,10 +166,13 @@ function App() {
       >
         <div className="text">
           <div>
-            <div>Good Evening, Andy</div>
-            <div className="time">{`${time.hours}:${
-              time.minutes < 10 ? "0" + time.minutes : time.minutes
-            }`}</div>
+            <div>{getGreeting(value / 15 + 6)}, Andy</div>
+            <div className="time">
+              {formatTime(count)}
+              {/* {`${time.hours}:${time.minutes
+              .toString()
+              .padStart(2)}`} */}
+            </div>
           </div>
           <div className="location">London, United Kingdom</div>
         </div>
@@ -141,14 +188,24 @@ function App() {
           }
         ></div>
       </div>
-      <input
-        type="range"
-        value={value}
-        onChange={(event) => setValue(parseFloat(event.target.value))}
-        min={0}
-        max={360}
-        step={1}
-      />
+
+      <button
+        className="button"
+        data-state={timeOfDay}
+        onClick={isRunning ? stop : start}
+        style={
+          {
+            "--x": `${borderX}%`,
+            "--y": `${borderY}%`,
+            "--opacity": opacity,
+            "--light": `${opacity * -100}%`,
+            "--angle": `${value}deg`,
+            "--boxShadow": shadows,
+          } as React.CSSProperties
+        }
+      >
+        {isRunning ? "Pause Simulation" : "Simulate Day"}
+      </button>
     </div>
   );
 }
