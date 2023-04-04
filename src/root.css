@@ -122,6 +122,7 @@
   border-radius: 9999px;
   padding: 6px 12px;
   min-width: 120px;
+  cursor: pointer;
 }
 
 .button[data-state="day"] {
