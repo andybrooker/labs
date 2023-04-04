@@ -5,7 +5,6 @@
   font-weight: 400;
   color-scheme: light dark;
   color: var(--foreground);
-  background-color: var(--background);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

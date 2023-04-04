@@ -36,6 +36,13 @@
   padding: 32px;
 }
 
+@media only screen and (max-width: 600px) {
+  .card {
+    width: 350px;
+    height: 175px;
+  }
+}
+
 .card[data-state="day"] {
   color: var(--gray12);
   --secondary-color: var(--gray11);
