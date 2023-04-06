@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+import windowsSFX from "./sounds/startup.mp3";
+
 import "./root.css";
+import useSound from "use-sound";
 
 function degreeToRadian(degrees: number) {
   return degrees * (Math.PI / 180);
-}
-
-function easeInOutCubic(x: number): number {
-  return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
 }
 
 function easeInQuad(x: number): number {
@@ -39,7 +38,6 @@ function getShadows({ angle }: { angle: number }) {
     const offsetSpread = normalisedIndex * 2.5;
 
     const hslLightness = 0.36 * Math.sin(angle);
-    console.log(hslLightness);
 
     return `${offsetX}px ${offsetY}px ${radiusBlur}px -${offsetSpread}px hsl(var(--shadow-color) / ${hslLightness})`;
   });
@@ -104,10 +102,16 @@ function getGreeting(time: number) {
   else return "Good Evening";
 }
 
-function formatTime(totalMinutes: number) {
-  const hours = Math.floor(totalMinutes / 60)
+const getProgress = (totalMinutes: number) =>
+  ((100 * Math.floor(totalMinutes / 30)) / 48).toString().padStart(2, "0");
+
+const getHours = (totalMinutes: number) =>
+  Math.floor(totalMinutes / 60)
     .toString()
     .padStart(2, "0");
+
+function formatTime(totalMinutes: number) {
+  const hours = getHours(totalMinutes);
   const minutes = (totalMinutes % 60).toString().padStart(2, "0");
   return `${hours}:${minutes}`;
 }
@@ -116,10 +120,15 @@ const dayOrNight = (value: number) =>
   0 <= value && value < 180 ? "day" : "night";
 
 function App() {
+  const [theme, setTheme] = useState<"flat" | "xp">("flat");
   const { count, start, stop, isRunning } = useCounter();
+  const [playStartup] = useSound(windowsSFX, { volume: 0.25 });
+  // const { time } = useTime();
   // const [value, setValue] = useState(0);
+  /* Derived Values */
+
   const value = (count - 360) / 4;
-  const maxDegrees = 360;
+  // const maxDegrees = 360;
 
   function getCoord(
     offset: number,
@@ -130,8 +139,7 @@ function App() {
     return offset - radius * trigFn(angle);
   }
 
-  const { time } = useTime();
-  const timeProportion = (time.hours + time.minutes / 60 - 6) / 24;
+  // const timeProportion = (time.hours + time.minutes / 60 - 6) / 24;
   // const value = 360 * timeProportion;
   const radians = degreeToRadian(value - 180);
 
@@ -146,10 +154,22 @@ function App() {
 
   return (
     <div
+      data-theme={theme}
       data-state={timeOfDay}
       className="app"
       style={{ "--light": `${opacity * -100}%` } as React.CSSProperties}
     >
+      <div className="toggleGroup">
+        <button onClick={() => setTheme("flat")}>Flat</button>
+        <button
+          onClick={() => {
+            setTheme("xp");
+            playStartup();
+          }}
+        >
+          Nostalgic
+        </button>
+      </div>
       <div
         data-state={timeOfDay}
         className="card"
@@ -164,6 +184,17 @@ function App() {
           } as React.CSSProperties
         }
       >
+        <div
+          className="title-bar"
+          style={
+            {
+              "--x": `${borderX}%`,
+              "--y": `${borderY}%`,
+            } as React.CSSProperties
+          }
+        >
+          Greetings
+        </div>
         <div className="text">
           <div>
             <div>{getGreeting(value / 15 + 6)}, Andy</div>
@@ -174,6 +205,24 @@ function App() {
               .padStart(2)}`} */}
             </div>
           </div>
+          <div className="progressContainer">
+            <div
+              style={
+                {
+                  "--progress": `${getProgress(count)}%`,
+                } as React.CSSProperties
+              }
+              className="progress"
+            >
+              {Array(48)
+                .fill(0)
+                .map(({ value, index }) => (
+                  <div className="loader"></div>
+                ))}
+            </div>
+            Day Progressing... {getHours(count)}/24
+          </div>
+
           <div className="location">London, United Kingdom</div>
         </div>
 
